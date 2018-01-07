@@ -24,7 +24,10 @@ end
 
 (* utilities ---------------------------------------------------------------- *)
 
-let implode l = String.concat "" (List.map (String.make 1) l)
+let implode chars =
+  let buf = Buffer.create 16 in
+  List.iter (Buffer.add_char buf) chars;
+  Buffer.contents buf
 
 let explode s =
   let l = ref [] in
@@ -100,7 +103,14 @@ let optional x = option () (x >> return ())
 let rec skip_many x = option () (x >>= fun _ -> skip_many x)
 let skip_many1 x = x >> skip_many x
 
-let rec many x = option [] (x >>= fun r -> many x >>= fun rs -> return (r :: rs))
+(* tail-recursive `many' *)
+let many p =
+  let rec loop c input =
+    match p input with
+    | Some (res, input') -> loop (fun tl -> c (res::tl)) input'
+    | None -> Some (c [], input) in
+  loop (fun x -> x)
+
 let many1 x = x <~> many x
 
 let sep_by1 x sep = x <~> many (sep >> x)
