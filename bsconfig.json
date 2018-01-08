@@ -1,0 +1,15 @@
+{
+  "name": "opal",
+  "version": "0.1.2",
+  "sources": [
+    "."
+  ],
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "bs-dependencies": [
+      // add your bs-dependencies here 
+  ]
+}
